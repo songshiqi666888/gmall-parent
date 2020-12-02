@@ -22,7 +22,7 @@ public interface ManageService {
      * @param category1Id
      * @return
      */
-    List<BaseCategory2> getCategory2(long category1Id);
+    List<BaseCategory2> getCategory2(Long category1Id);
 
     /**
      * 根据二级分类id查询三级分类信息
@@ -30,7 +30,7 @@ public interface ManageService {
      * @param category2Id
      * @return
      */
-    List<BaseCategory3> getCategory3(long category2Id);
+    List<BaseCategory3> getCategory3(Long category2Id);
 
     /**
      * 根据123级id查询商品属性列表
@@ -47,5 +47,9 @@ public interface ManageService {
      * @param category3Id
      * @return
      */
-    List<BaseAttrInfo> getAttrInfoList(long category1Id, long category2Id, long category3Id);
+    List<BaseAttrInfo> getAttrInfoList(Long category1Id, Long category2Id, Long category3Id);
+
+    void saveAttrInfo(BaseAttrInfo baseAttrInfo);
+
+    BaseAttrInfo getAttrInfo(Long attrId);
 }

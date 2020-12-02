@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface BaseAttrInfoMapper extends BaseMapper<BaseAttrInfo> {
-    List<BaseAttrInfo> selectBaseAttrInfoList(@Param("category1Id")long category1Id,
-                                              @Param("category2Id")long category2Id,
-                                              @Param("category3Id")long category3Id);
+    List<BaseAttrInfo> selectBaseAttrInfoList(@Param("category1Id")Long category1Id,
+                                              @Param("category2Id")Long category2Id,
+                                              @Param("category3Id")Long category3Id);
 }

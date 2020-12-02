@@ -37,5 +37,6 @@ public class BaseAttrInfo extends BaseEntity {
 	@TableField(exist = false)
 	private List<BaseAttrValue> attrValueList;
 
+
 }
 
