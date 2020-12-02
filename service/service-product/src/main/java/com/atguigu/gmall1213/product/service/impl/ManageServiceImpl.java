@@ -4,6 +4,8 @@ import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall1213.product.mapper.*;
 import com.atguigu.gmall1213.product.service.ManageService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,8 @@ public class ManageServiceImpl implements ManageService {
     @Autowired
     private BaseAttrValueMapper baseAttrValueMapper;
 
+    @Autowired
+    private SpuInfoMapper spuInfoMapper;
 
     @Override
     public List<BaseCategory1> getCategory1() {
@@ -36,12 +40,6 @@ public class ManageServiceImpl implements ManageService {
         return baseCategory1Mapper.selectList(null);
     }
 
-    /**
-     * 查询二级属性
-     *
-     * @param category1Id
-     * @return
-     */
     @Override
     public List<BaseCategory2> getCategory2(Long category1Id) {
         QueryWrapper<BaseCategory2> queryWrapper = new QueryWrapper<>();
@@ -51,12 +49,6 @@ public class ManageServiceImpl implements ManageService {
         return baseCategory2List;
     }
 
-    /**
-     * 查询三级属性
-     *
-     * @param category2Id
-     * @return
-     */
     @Override
     public List<BaseCategory3> getCategory3(Long category2Id) {
         QueryWrapper<BaseCategory3> queryWrapper = new QueryWrapper<>();
@@ -66,26 +58,36 @@ public class ManageServiceImpl implements ManageService {
         return baseCategory3List;
     }
 
-
-    /**
-     * 查询商品属性值
-     *
-     * @param category1Id
-     * @param category2Id
-     * @param category3Id
-     * @return
-     */
     @Override
     public List<BaseAttrInfo> getAttrInfoList(Long category1Id, Long category2Id, Long category3Id) {
 
         return baseAttrInfoMapper.selectBaseAttrInfoList(category1Id, category2Id, category3Id);
     }
 
-    /**
-     * 保存商品属性信息
-     *
-     * @param baseAttrInfo
-     */
+    @Override
+    public BaseAttrInfo getAttrInfo(Long attrId) {
+        //平台属性
+        BaseAttrInfo baseAttrInfo = baseAttrInfoMapper.selectById(attrId);
+
+        if (null!=baseAttrInfo) {
+            //查谁new谁
+            QueryWrapper<BaseAttrValue> baseAttrValueQueryWrapper = new QueryWrapper<>();
+            baseAttrValueQueryWrapper.eq("attr_id", attrId);
+            List<BaseAttrValue> baseAttrValueList = baseAttrValueMapper.selectList(baseAttrValueQueryWrapper);
+            // 将平台属性值结合放入baseAttrInfo 中，此时才能返回！
+            baseAttrInfo.setAttrValueList(baseAttrValueList);
+        }
+        return baseAttrInfo;
+    }
+
+    @Override
+    public IPage<SpuInfo> selectPage(Page<SpuInfo> pageParam, SpuInfo spuInfo) {
+        QueryWrapper<SpuInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("category3_id", spuInfo.getCategory3Id());
+        queryWrapper.orderByDesc("id");
+        return spuInfoMapper.selectPage(pageParam, queryWrapper);
+    }
+
     @Override
     @Transactional//开启事务
     public void saveAttrInfo(BaseAttrInfo baseAttrInfo) {
@@ -116,21 +118,5 @@ public class ManageServiceImpl implements ManageService {
 
         }
 
-    }
-
-    @Override
-    public BaseAttrInfo getAttrInfo(Long attrId) {
-        //平台属性
-        BaseAttrInfo baseAttrInfo = baseAttrInfoMapper.selectById(attrId);
-
-        if (null!=baseAttrInfo) {
-            //查谁new谁
-            QueryWrapper<BaseAttrValue> baseAttrValueQueryWrapper = new QueryWrapper<>();
-            baseAttrValueQueryWrapper.eq("attr_id", attrId);
-            List<BaseAttrValue> baseAttrValueList = baseAttrValueMapper.selectList(baseAttrValueQueryWrapper);
-            // 将平台属性值结合放入baseAttrInfo 中，此时才能返回！
-            baseAttrInfo.setAttrValueList(baseAttrValueList);
-        }
-        return baseAttrInfo;
     }
 }

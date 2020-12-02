@@ -3,7 +3,10 @@ package com.atguigu.gmall1213.product.controller;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall1213.product.service.ManageService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,5 +94,15 @@ public class BaseManageController {
         BaseAttrInfo baseAttrInfo = manageService.getAttrInfo(attrId);
         List<BaseAttrValue> baseAttrValueList = baseAttrInfo.getAttrValueList();
         return Result.ok(baseAttrValueList);
+    }
+
+    @GetMapping("{page}/{size}")
+    public Result<IPage<SpuInfo>> index(@ApiParam(name = "page", value = "当前页码", required = true) @PathVariable Long page,
+                                        @ApiParam(name = "size", value = "每页记录数", required = true) @PathVariable Long size,
+                                        @ApiParam(name = "spuInfo", value = "查询对象", required = false) @PathVariable SpuInfo spuInfo) {
+        Page<SpuInfo> pageParam = new Page<>(page, size);
+
+        IPage<SpuInfo> spuInfoIPage = manageService.selectPage(pageParam, spuInfo);
+        return Result.ok(spuInfoIPage);
     }
 }
