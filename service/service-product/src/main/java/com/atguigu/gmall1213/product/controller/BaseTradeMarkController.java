@@ -37,6 +37,8 @@ public class BaseTradeMarkController {
         return Result.ok(baseTrademark);
     }
 
+
+
     @ApiOperation("新增商品品牌")
     @PostMapping("save")
     public Result save(@RequestBody BaseTrademark banner){
